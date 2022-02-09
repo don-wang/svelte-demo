@@ -1,4 +1,5 @@
 <script>
+  import { fade, slide, scale } from "svelte/transition";
   import Header from "./components/Header.svelte";
   import Footer from "./components/Footer.svelte";
   import PollList from "./components/PollList.svelte";
