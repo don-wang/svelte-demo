@@ -12,50 +12,16 @@
     activeTab = e.detail;
   };
 
-  let polls = [
-    {
-      id: 1,
-      question: "React or Vue?",
-      answer1: "React",
-      answer2: "Vue",
-      votes1: 9,
-      votes2: 15,
-    },
-    {
-      id: 2,
-      question: "Svelte or Vue?",
-      answer1: "Svelte",
-      answer2: "Vue",
-      votes1: 23,
-      votes2: 11,
-    },
-  ];
   const handleAdd = (e) => {
-    console.log(polls);
-    const newPoll = e.detail;
-    polls = [newPoll, ...polls];
     activeTab = "Current Polls";
-  };
-
-  const handleVote = (e) => {
-    const { option, id } = e.detail;
-    let cpPolls = [...polls];
-    let votedPoll = cpPolls.find((poll) => poll.id === id);
-    if (option === "1") {
-      votedPoll.votes1++;
-    }
-    if (option === "2") {
-      votedPoll.votes2++;
-    }
-    polls = [...cpPolls];
   };
 </script>
 
 <Header />
 <main>
-  <Tabs {activeTab} {tabs} on:tabChange={tabChange}>X</Tabs>
+  <Tabs {activeTab} {tabs} on:tabChange={tabChange} />
   {#if activeTab === "Current Polls"}
-    <PollList {polls} on:vote={handleVote} />
+    <PollList />
   {:else if activeTab === "Add New Poll"}
     <NewPollForm on:add={handleAdd} />
   {/if}
