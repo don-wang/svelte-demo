@@ -1,68 +1,73 @@
 <script>
-  import Modal from "./Modal.svelte";
-  import AddForm from "./AddForm.svelte";
+  import Header from "./components/Header.svelte";
+  import Footer from "./components/Footer.svelte";
+  import PollList from "./components/PollList.svelte";
+  import NewPollForm from "./components/NewPollFrom.svelte";
+  import Tabs from "./shared/Tabs.svelte";
 
-  let showModal = false;
+  // tabs
+  let tabs = ["Current Polls", "Add New Poll"];
+  let activeTab = "Current Polls";
+  const tabChange = (e) => {
+    activeTab = e.detail;
+  };
 
-  let people = [
-    { name: "Xu", color: "red", age: 18, skills: [], id: 1 },
-    { name: "Don", color: "pink", age: 35, skills: [], id: 2 },
-    { name: "Pi", color: "black", age: 24, skills: [], id: 3 },
+  let polls = [
+    {
+      id: 1,
+      question: "React or Vue?",
+      answer1: "React",
+      answer2: "Vue",
+      votes1: 9,
+      votes2: 15,
+    },
+    {
+      id: 2,
+      question: "Svelte or Vue?",
+      answer1: "Svelte",
+      answer2: "Vue",
+      votes1: 23,
+      votes2: 11,
+    },
   ];
-
-  const handleClick = (id) => {
-    people = people.filter((one) => one.id != id);
+  const handleAdd = (e) => {
+    console.log(polls);
+    const newPoll = e.detail;
+    polls = [newPoll, ...polls];
+    activeTab = "Current Polls";
   };
 
-  const togleModal = () => {
-    showModal = !showModal;
-  };
-
-  const addOne = (e) => {
-    const newOne = e.detail;
-    people = [newOne, ...people];
-    showModal = false;
+  const handleVote = (e) => {
+    const { option, id } = e.detail;
+    let cpPolls = [...polls];
+    let votedPoll = cpPolls.find((poll) => poll.id === id);
+    if (option === "1") {
+      votedPoll.votes1++;
+    }
+    if (option === "2") {
+      votedPoll.votes2++;
+    }
+    polls = [...cpPolls];
   };
 </script>
 
-<Modal {showModal} on:click={togleModal}>
-  <AddForm on:addOne={addOne} />
-</Modal>
+<Header />
 <main>
-  <button on:click|once={togleModal}>Toggle</button>
-  {#each people as one (one.id)}
-    <div>
-      <h1>{one.name}</h1>
-      {#if one.color === "black"}
-        <p>Master</p>
-      {/if}
-      <p>{one.age} years old, seems {one.color}</p>
-      <p>{one.skills}</p>
-      <button on:click={() => handleClick(one.id)}>delete</button>
-    </div>
-  {:else}
-    <p>No one here</p>
-  {/each}
+  <Tabs {activeTab} {tabs} on:tabChange={tabChange}>X</Tabs>
+  {#if activeTab === "Current Polls"}
+    <PollList {polls} on:vote={handleVote} />
+  {:else if activeTab === "Add New Poll"}
+    <NewPollForm on:add={handleAdd} />
+  {/if}
 </main>
+<Footer />
 
 <style>
   main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
+    max-width: 800px;
+    margin: 40px auto;
   }
 
   @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
   }
 </style>
